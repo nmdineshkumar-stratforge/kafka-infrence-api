@@ -3,7 +3,9 @@ WORKDIR /app
 
 COPY . .
 
-COPY ./requirements.txt /app/requirements.txt
+COPY ./worker/requirements.txt /app/requirements.txt
+COPY backgroudprocess.py /app/
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["uvicorn", "Backend:app","--port", "8000"]
+CMD ["python", "worker.py"]

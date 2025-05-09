@@ -5,10 +5,13 @@ from kafka import KafkaConsumer, KafkaProducer
 import json
 import threading
 
+KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", 'kafka:9092')
+
 producer = KafkaProducer(
-    bootstrap_servers='localhost:9092',
+    bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
+
 
 model = whisper.load_model("base")
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -39,7 +42,7 @@ def process_audio(task):
 # Kafka consumer loop
 consumer = KafkaConsumer(
     'input-topic',
-    bootstrap_servers='localhost:9092',
+    bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
     auto_offset_reset='earliest',
     enable_auto_commit=True,
     group_id='worker-group',

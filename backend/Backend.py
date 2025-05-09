@@ -6,14 +6,14 @@ from backgroudprocess import send_message
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
-
+KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", 'kafka:9092')
 app = FastAPI()
 responses = {}  # shared memory dict
 
 def start_kafka_consumer():
     consumer = KafkaConsumer(
         'result-topic',
-        bootstrap_servers='localhost:9092',
+        bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
         auto_offset_reset='earliest',
         enable_auto_commit=True,
         group_id='backend-group',

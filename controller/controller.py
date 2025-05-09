@@ -1,21 +1,23 @@
 from kafka import KafkaConsumer,KafkaProducer
 from kubernetes import client, config
 import json
-import uuid
+import os
 
 # Load kubeconfig (Windows with Docker Desktop)
 config.load_kube_config()
 batch_v1 = client.BatchV1Api()
 
+KAFKA_BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", 'kafka:9092')
+
 # 
 producer = KafkaProducer(
-    bootstrap_servers='localhost:9092',
+    bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 # Kafka consumer setup
 consumer = KafkaConsumer(
     'input-topic',
-    bootstrap_servers='localhost:9092',
+    bootstrap_servers=KAFKA_BOOTSTRAP_SERVERS,
     value_deserializer=lambda m: json.loads(m.decode('utf-8')),
     auto_offset_reset='earliest',
     group_id='controller-group',

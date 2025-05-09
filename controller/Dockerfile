@@ -3,7 +3,9 @@ WORKDIR /app
 
 COPY . .
 
-COPY ./requirements.txt /app/requirements.txt
+COPY ./controller/requirements.txt /app/requirements.txt
+COPY backgroudprocess.py /app/
+
 RUN pip install --no-cache-dir -r requirements.txt
 
 CMD ["python", "controller.py"]
